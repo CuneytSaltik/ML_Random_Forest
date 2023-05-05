@@ -16,8 +16,8 @@ from sklearn.metrics import mean_squared_error
 
 dfread = pd.read_csv(r"/Users/cunsal/Library/Mobile Documents/com~apple~CloudDocs/Documents/DataThesis/CIC/CIC_cleaned.csv", header=0)
 
-df = dfread[dfread['label'] == 1.0].sample(5)
-dfzero = dfread[dfread['label'] == 0.0].sample(5)
+df = dfread[dfread['label'] == 1.0].sample(5000)
+dfzero = dfread[dfread['label'] == 0.0].sample(5000)
 print(df.count())
 print(dfzero.count())
 df = pd.concat([df, dfzero], ignore_index=True)
@@ -75,7 +75,7 @@ gbc_clf2 = RandomForestClassifier(#nthread = grid_result.best_params_.get('nthre
 
 gbc_clf2.fit(X_train, y_train)
 
-with open('model_pickle', 'wb') as f:
+with open('model_pickle_cic', 'wb') as f:
     pickle.dump(gbc_clf2, f)
 
 acc_train = accuracy_score(y_train, gbc_clf2.predict(X_train)) * 100
