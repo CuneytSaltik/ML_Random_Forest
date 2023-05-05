@@ -10,11 +10,11 @@ from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDis
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import tree
-from sklearn.metrics import accuracy_score, confusion_matrix, plot_confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix #, plot_confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_squared_error
 
-dfread = pd.read_csv(r"/Users/cunsal/Library/Mobile Documents/com~apple~CloudDocs/Documents/DataThesis/UNSW", header=0)
+dfread = pd.read_csv(r"/Users/cunsal/Library/Mobile Documents/com~apple~CloudDocs/Documents/DataThesis/UNSW/UNSW_cleaned.csv", header=0)
 
 df = dfread[dfread['label'] == 1.0].sample(5)
 dfzero = dfread[dfread['label'] == 0.0].sample(5)
@@ -74,7 +74,7 @@ gbc_clf2 = RandomForestClassifier(  # nthread = grid_result.best_params_.get('nt
 )
 
 gbc_clf2.fit(X_train, y_train)
-
+'''
 with open('model_pickle', 'wb') as f: pickle.dump(gbc_clf2, f)
 
 acc_train = accuracy_score(y_train, gbc_clf2.predict(X_train)) * 100
@@ -90,6 +90,34 @@ print("Mean Squre Error - test {:.4f}".format(mean_squared_error(y_test, y_test_
 plot_confusion_matrix(gbc_clf2, X_test, y_test)
 plt.show()
 tn, fp, fn, tp = confusion_matrix(y_test, y_test_pred).ravel()
+'''
+
+gbc_clf2.fit(X_train, y_train)
+
+with open('model_pickle', 'wb') as f:
+    pickle.dump(gbc_clf2, f)
+
+acc_train = accuracy_score(y_train, gbc_clf2.predict(X_train)) * 100
+acc_test = accuracy_score(y_test, gbc_clf2.predict(X_test)) * 100
+print("accuracy of train phase is {:.4f}".format(acc_train))
+print("accuracy of test phase is {:.4f}".format(acc_test))
+
+y_train_pred = gbc_clf2.predict(X_train)
+y_test_pred = gbc_clf2.predict(X_test)
+print("Mean Squre Error - train {:.4f}".format(mean_squared_error(y_train, y_train_pred)))
+print("Mean Squre Error - test {:.4f}".format(mean_squared_error(y_test, y_test_pred)))
+
+# Create confusion matrix display for test data
+cm = confusion_matrix(y_test, y_test_pred)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot()
+plt.show()
+
+tn, fp, fn, tp = cm.ravel()
+
+
+
+
 
 print("-------------------------------------Metrics------------------------------------------")
 print("Test accuracy score {:.4f}".format(accuracy_score(y_test, y_test_pred) * 100))
